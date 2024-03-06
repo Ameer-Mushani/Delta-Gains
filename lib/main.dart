@@ -45,7 +45,7 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Workout App'),
+        title: const Center(child: Text('Δ Delta Gains')),
       ),
       body: Center(
         child:  TableCalendar(
