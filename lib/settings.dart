@@ -8,6 +8,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   int _selectedIndex = 2;
+  bool isLbs = true;
 
   void _onNavigate(String routeName) {
     if (ModalRoute.of(context)?.settings.name != routeName) {
@@ -21,8 +22,30 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text('Settings'),
       ),
-      body: Center(
-        child: Text('Settings Page'),
+      body: Column(
+        children: [
+          CheckboxListTile(
+            value: isLbs,
+            title: Text("Lbs"),
+            controlAffinity: ListTileControlAffinity.leading,
+            onChanged: (newValue) {
+              setState(() {
+                // need exclamation for null safety see https://dart.dev/null-safety
+                isLbs = newValue!;
+              });
+            },
+          ),
+          CheckboxListTile(
+            value: !isLbs,
+            title: Text("Kgs"),
+            controlAffinity: ListTileControlAffinity.leading,
+            onChanged: (newValue) {
+              setState(() {
+                isLbs = !newValue!;
+              });
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
