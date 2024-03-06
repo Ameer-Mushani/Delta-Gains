@@ -48,30 +48,52 @@ class _LandingPageState extends State<LandingPage> {
         title: const Center(child: Text('Δ Delta Gains')),
       ),
       body: Center(
-        child:  TableCalendar(
-          firstDay: DateTime.utc(2000, 1, 1),
-          lastDay: DateTime(2100, 12, 31),
-          focusedDay: DateTime.now(),
-          calendarFormat: _calendarFormat,
-          availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) {
-            setState(() {
-              _selectedDay = selectedDay;
-              _focusedDay = focusedDay; // update `_focusedDay` here as well
-            });
-          },
-          onFormatChanged: (format) {
-            setState(() {
-              _calendarFormat = format;
-            });
-          },
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
-        )
+          child: Column(
+            children: [
+              TableCalendar(
+                firstDay: DateTime.utc(2000, 1, 1),
+                lastDay: DateTime(2100, 12, 31),
+                focusedDay: DateTime.now(),
+                headerStyle: const HeaderStyle(
+                  titleCentered: true
+                ),
+                calendarFormat: _calendarFormat,
+                availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay; // update `_focusedDay` here as well
+                  });
+                },
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                },
+                onPageChanged: (focusedDay) {
+                  _focusedDay = focusedDay;
+                },
+              ),
+              TextButton(onPressed: () => {
+                showDialog(context: context, builder: (BuildContext context) {
+                  return  AlertDialog(
+                    title: Text("Feature coming soon!"),
+                    actions: <Widget>[
+                      TextButton(
+                          onPressed: ()  {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("Close"))
+                    ],
+                  );
+                })
+              }, child: Text("Export to CSV"),)
+            ],
+          )
+
       ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
