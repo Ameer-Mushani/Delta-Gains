@@ -49,11 +49,11 @@ class _LandingPageState extends State<LandingPage> {
       ),
       body: Center(
         child:  TableCalendar(
-
           firstDay: DateTime.utc(2000, 1, 1),
           lastDay: DateTime(2100, 12, 31),
           focusedDay: DateTime.now(),
           calendarFormat: _calendarFormat,
+          availableCalendarFormats: const {CalendarFormat.month: 'Month'},
           selectedDayPredicate: (day) {
             return isSameDay(_selectedDay, day);
           },
