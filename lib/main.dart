@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'settings.dart';
 import 'create_workout.dart';
 import 'stats.dart';
 import 'navbar.dart';
 import 'edit_workout.dart';
-void main() => runApp(MyApp());
+import 'workout_provider.dart';
+void main() => runApp(
+    ChangeNotifierProvider(
+        create: (context) => WorkoutProvider(),
+      child: MyApp()
+    )
+);
 
 class MyApp extends StatelessWidget {
   @override

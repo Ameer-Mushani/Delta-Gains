@@ -1,8 +1,12 @@
+import 'package:delta_gains/workout_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
+import 'package:provider/provider.dart';
 import 'dart:ui';
 import 'navbar.dart';
 import 'main.dart';
+import 'exercise.dart';
+import 'workout.dart';
 
 void main() => runApp(MyApp());
 
@@ -46,51 +50,57 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Edit Workout')),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Workout Name'),
-                onSaved: (value) => workoutName = value ?? '',
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: exercises.length,
-                itemBuilder: (context, index) {
-                  return ExerciseInput(
-                    exercise: exercises[index],
-                    isExpanded: expandedExerciseId == exercises[index].id,
-                    onExpansionChanged: (isExpanded) {
-                      setState(() {
-                        if (isExpanded) {
-                          expandedExerciseId = exercises[index].id;
-                        } else {
-                          expandedExerciseId =
+      appBar: AppBar(title: const Text('Edit Workout')),
+      body: Consumer<WorkoutProvider>(
+        builder: (context, workoutProvider, child) {
+          return SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Workout Name'),
+                    onSaved: (value) => workoutName = value ?? '',
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: exercises.length,
+                    itemBuilder: (context, index) {
+                      return ExerciseInput(
+                        exercise: exercises[index],
+                        isExpanded: expandedExerciseId == exercises[index].id,
+                        onExpansionChanged: (isExpanded) {
+                          setState(() {
+                            if (isExpanded) {
+                              expandedExerciseId = exercises[index].id;
+                            } else {
+                              expandedExerciseId =
                               null; // Collapse if it was expanded and user taps to close
-                        }
-                      });
+                            }
+                          });
+                        },
+                      );
                     },
-                  );
-                },
+                  ),
+                  ElevatedButton(
+                    onPressed: _addExercise,
+                    child: Icon(Icons.add),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _formKey.currentState?.save();
+                      // Handle the saved workout and exercises here
+                      Workout newWorkout =  Workout(workoutName, exercises);
+                      workoutProvider.addWorkout(newWorkout);
+                    },
+                    child: Text('Save Workout'),
+                  ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: _addExercise,
-                child: Icon(Icons.add),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _formKey.currentState?.save();
-                  // Handle the saved workout and exercises here
-                },
-                child: Text('Save Workout'),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
@@ -144,21 +154,21 @@ class _ExerciseInputState extends State<ExerciseInput> {
                   decoration: InputDecoration(labelText: 'Weight'),
                   keyboardType: TextInputType.number,
                   onChanged: (value) => setState(
-                      () => widget.exercise.weight = int.tryParse(value) ?? 0),
+                          () => widget.exercise.weight = int.tryParse(value) ?? 0),
                 ),
                 TextFormField(
                   initialValue: widget.exercise.sets.toString(),
                   decoration: InputDecoration(labelText: 'Sets'),
                   keyboardType: TextInputType.number,
                   onChanged: (value) => setState(
-                      () => widget.exercise.sets = int.tryParse(value) ?? 0),
+                          () => widget.exercise.sets = int.tryParse(value) ?? 0),
                 ),
                 TextFormField(
                   initialValue: widget.exercise.reps.toString(),
                   decoration: InputDecoration(labelText: 'Reps'),
                   keyboardType: TextInputType.number,
                   onChanged: (value) => setState(
-                      () => widget.exercise.reps = int.tryParse(value) ?? 0),
+                          () => widget.exercise.reps = int.tryParse(value) ?? 0),
                 ),
               ],
             ),
@@ -169,12 +179,3 @@ class _ExerciseInputState extends State<ExerciseInput> {
   }
 }
 
-class Exercise {
-  int id;
-  String name = '';
-  int weight = 0;
-  int sets = 0;
-  int reps = 0;
-
-  Exercise({required this.id});
-}
