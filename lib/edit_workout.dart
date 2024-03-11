@@ -2,12 +2,13 @@ import 'package:delta_gains/workout_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:provider/provider.dart';
+import 'weight_selector.dart';
 import 'dart:ui';
 import 'navbar.dart';
 import 'main.dart';
 import 'exercise.dart';
 import 'workout.dart';
-
+import 'create_workout.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -89,12 +90,15 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
                       _formKey.currentState?.save();
                       // Handle the saved workout and exercises here
                       Workout newWorkout =  Workout(workoutName, exercises);
                       workoutProvider.addWorkout(newWorkout);
+
                     },
                     child: Text('Save Workout'),
+
                   ),
                 ],
               ),
@@ -145,31 +149,52 @@ class _ExerciseInputState extends State<ExerciseInput> {
               children: [
                 TextFormField(
                   initialValue: widget.exercise.name,
-                  decoration: InputDecoration(labelText: 'Exercise Name'),
-                  onChanged: (value) =>
-                      setState(() => widget.exercise.name = value),
+                  decoration: InputDecoration(labelText: 'Exercise Name', labelStyle: TextStyle(fontSize: 18)),
+                  onChanged: (value) => setState(() => widget.exercise.name = value),
+                  style: TextStyle(fontSize: 20),
                 ),
-                TextFormField(
-                  initialValue: widget.exercise.weight.toString(),
-                  decoration: InputDecoration(labelText: 'Weight'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) => setState(
-                          () => widget.exercise.weight = int.tryParse(value) ?? 0),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center, // Center row content
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.remove),
+                      iconSize: 25.0,
+                      onPressed: () => setState(() {
+                        widget.exercise.sets = (widget.exercise.sets > 0) ? widget.exercise.sets - 1 : 0;
+                      }),
+                    ),
+                    Text('${widget.exercise.sets} sets', style: TextStyle(fontSize: 25)), // Display 'X sets'
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      iconSize: 25.0,
+                      onPressed: () => setState(() {
+                        widget.exercise.sets += 1;
+                      }),
+                    ),
+                  ],
                 ),
-                TextFormField(
-                  initialValue: widget.exercise.sets.toString(),
-                  decoration: InputDecoration(labelText: 'Sets'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) => setState(
-                          () => widget.exercise.sets = int.tryParse(value) ?? 0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center, // Center row content
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.remove),
+                      iconSize: 25.0,
+                      onPressed: () => setState(() {
+                        widget.exercise.reps = (widget.exercise.reps > 0) ? widget.exercise.reps - 1 : 0;
+                      }),
+                    ),
+                    Text('${widget.exercise.reps} reps', style: TextStyle(fontSize: 25)),
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      iconSize: 25.0,
+                      onPressed: () => setState(() {
+                        widget.exercise.reps += 1;
+                      }),
+                    ),
+                  ],
                 ),
-                TextFormField(
-                  initialValue: widget.exercise.reps.toString(),
-                  decoration: InputDecoration(labelText: 'Reps'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) => setState(
-                          () => widget.exercise.reps = int.tryParse(value) ?? 0),
-                ),
+                WeightSelector(exercise: widget.exercise),
               ],
             ),
           ),
