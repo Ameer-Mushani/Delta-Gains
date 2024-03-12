@@ -33,24 +33,28 @@ class _WeightSelectorState extends State<WeightSelector> {
           spacing: 8.0, // Space between buttons
           alignment: WrapAlignment.center, // Center the buttons horizontally
           children: <Widget>[
-            HexagonButton(size: 110.0, weight: 45.0, onPressed: () => addWeight(45.0), label: '45 lbs'),
-            HexagonButton(size: 110.0, weight: 35.0, onPressed: () => addWeight(35.0), label: '35 lbs'),
-            HexagonButton(size: 110.0, weight: 25.0, onPressed: () => addWeight(25.0), label: '25 lbs'),
-            HexagonButton(size: 110.0, weight: 10.0, onPressed: () => addWeight(10.0), label: '10 lbs'),
-            HexagonButton(size: 110.0, weight: 5.0, onPressed: () => addWeight(5.0), label: '5 lbs'),
-            HexagonButton(size: 110.0, weight: 2.5, onPressed: () => addWeight(2.5), label: '2.5 lbs'),
+            HexagonButton(size: 110.0, weight: 45.0, onPressed: () => addWeight(45.0), label: '+45 lbs'),
+            HexagonButton(size: 110.0, weight: 35.0, onPressed: () => addWeight(35.0), label: '+35 lbs'),
+            HexagonButton(size: 110.0, weight: 25.0, onPressed: () => addWeight(25.0), label: '+25 lbs'),
+            HexagonButton(size: 110.0, weight: 10.0, onPressed: () => addWeight(10.0), label: '+10 lbs'),
+            HexagonButton(size: 110.0, weight: 5.0, onPressed: () => addWeight(5.0), label: '+5 lbs'),
+            HexagonButton(size: 110.0, weight: 2.5, onPressed: () => addWeight(2.5), label: '+2.5 lbs'),
           ],
         ),
         SizedBox(height: 10), // Add some spacing before the reset button
         Center( // Center the reset button horizontally
-          child: ElevatedButton(
-            onPressed: resetWeight,
-            child: Text('Reset'),
-            style: ElevatedButton.styleFrom(
-              primary: Colors.red, // Button color
-              onPrimary: Colors.white, // Text color
-            ),
-          ),
+            child: Padding(
+              padding: EdgeInsets.only(top: 42),
+              child:  ElevatedButton(
+                onPressed: resetWeight,
+                child: Text('Reset Weight'),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red, // Button color
+                  onPrimary: Colors.white, // Text color
+                ),
+              ),
+            )
+
         ),
       ],
     );

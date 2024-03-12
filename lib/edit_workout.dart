@@ -45,72 +45,86 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
       exercises.add(newExercise);
       // Set the new exercise as the only expanded item.
       expandedExerciseId = newExercise.id;
+      //use unfocus to dismiss keyboard
+      FocusManager.instance.primaryFocus?.unfocus();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Edit Workout')),
-      body: Consumer<WorkoutProvider>(
-        builder: (context, workoutProvider, child) {
-          return SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Workout Name'),
-                    onSaved: (value) => workoutName = value ?? '',
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: exercises.length,
-                    itemBuilder: (context, index) {
-                      return ExerciseInput(
-                        exercise: exercises[index],
-                        isExpanded: expandedExerciseId == exercises[index].id,
-                        onExpansionChanged: (isExpanded) {
-                          setState(() {
-                            if (isExpanded) {
-                              expandedExerciseId = exercises[index].id;
-                            } else {
-                              expandedExerciseId =
-                              null; // Collapse if it was expanded and user taps to close
-                            }
-                          });
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child:  Scaffold(
+        appBar: AppBar(title: const Text('Edit Workout')),
+        body: Consumer<WorkoutProvider>(
+          builder: (context, workoutProvider, child) {
+            return SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      decoration: const InputDecoration(labelText: 'Workout Name'),
+                      onSaved: (value) => workoutName = value ?? '',
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: exercises.length,
+                      itemBuilder: (context, index) {
+                        return ExerciseInput(
+                          exercise: exercises[index],
+                          isExpanded: expandedExerciseId == exercises[index].id,
+                          onExpansionChanged: (isExpanded) {
+                            setState(() {
+                              if (isExpanded) {
+                                expandedExerciseId = exercises[index].id;
+                              } else {
+                                expandedExerciseId =
+                                null; // Collapse if it was expanded and user taps to close
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child:  ElevatedButton(
+                        onPressed: _addExercise,
+                        child: Icon(Icons.add),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
+                          _formKey.currentState?.save();
+                          // Handle the saved workout and exercises here
+                          Workout newWorkout =  Workout(workoutName, exercises);
+                          workoutProvider.addWorkout(newWorkout);
+
                         },
-                      );
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: _addExercise,
-                    child: Icon(Icons.add),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
-                      _formKey.currentState?.save();
-                      // Handle the saved workout and exercises here
-                      Workout newWorkout =  Workout(workoutName, exercises);
-                      workoutProvider.addWorkout(newWorkout);
+                        child: Text('Save Workout'),
+                      ),
+                    )
 
-                    },
-                    child: Text('Save Workout'),
-
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-      bottomNavigationBar: BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onItemSelected: _onNavigate,
+            );
+          },
+        ),
+        bottomNavigationBar: BottomNavBar(
+          selectedIndex: _selectedIndex,
+          onItemSelected: _onNavigate,
+        ),
       ),
     );
+
   }
 }
 
