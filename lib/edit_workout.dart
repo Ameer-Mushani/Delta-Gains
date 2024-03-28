@@ -3,24 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:provider/provider.dart';
 import 'weight_selector.dart';
-import 'dart:ui';
 import 'navbar.dart';
-import 'main.dart';
 import 'exercise.dart';
 import 'workout.dart';
-import 'create_workout.dart';
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: EditWorkoutPage(),
     );
   }
 }
 
 class EditWorkoutPage extends StatefulWidget {
+  const EditWorkoutPage({super.key});
+
   @override
   _EditWorkoutPageState createState() => _EditWorkoutPageState();
 }
@@ -31,7 +32,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
   List<Exercise> exercises = [];
   int? expandedExerciseId;
   int lastExerciseId = 0;
-  int _selectedIndex = 1;
+  final int _selectedIndex = 1;
 
   void _onNavigate(String routeName) {
     if (ModalRoute.of(context)?.settings.name != routeName) {
@@ -91,14 +92,14 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                       },
                     ),
                     Padding(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       child:  ElevatedButton(
                         onPressed: _addExercise,
-                        child: Icon(Icons.add),
+                        child: const Icon(Icons.add),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
@@ -108,7 +109,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                           workoutProvider.addWorkout(newWorkout);
 
                         },
-                        child: Text('Save Workout'),
+                        child: const Text('Save Workout'),
                       ),
                     )
 
@@ -133,7 +134,7 @@ class ExerciseInput extends StatefulWidget {
   final bool isExpanded;
   final Function(bool) onExpansionChanged;
 
-  ExerciseInput({
+  const ExerciseInput({super.key, 
     required this.exercise,
     this.isExpanded = false,
     required this.onExpansionChanged,
@@ -163,24 +164,24 @@ class _ExerciseInputState extends State<ExerciseInput> {
               children: [
                 TextFormField(
                   initialValue: widget.exercise.name,
-                  decoration: InputDecoration(labelText: 'Exercise Name', labelStyle: TextStyle(fontSize: 18)),
+                  decoration: const InputDecoration(labelText: 'Exercise Name', labelStyle: TextStyle(fontSize: 18)),
                   onChanged: (value) => setState(() => widget.exercise.name = value),
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center, // Center row content
                   children: [
                     IconButton(
-                      icon: Icon(Icons.remove),
+                      icon: const Icon(Icons.remove),
                       iconSize: 25.0,
                       onPressed: () => setState(() {
                         widget.exercise.sets = (widget.exercise.sets > 0) ? widget.exercise.sets - 1 : 0;
                       }),
                     ),
-                    Text('${widget.exercise.sets} sets', style: TextStyle(fontSize: 25)), // Display 'X sets'
+                    Text('${widget.exercise.sets} sets', style: const TextStyle(fontSize: 25)), // Display 'X sets'
                     IconButton(
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       iconSize: 25.0,
                       onPressed: () => setState(() {
                         widget.exercise.sets += 1;
@@ -192,15 +193,15 @@ class _ExerciseInputState extends State<ExerciseInput> {
                   mainAxisAlignment: MainAxisAlignment.center, // Center row content
                   children: [
                     IconButton(
-                      icon: Icon(Icons.remove),
+                      icon: const Icon(Icons.remove),
                       iconSize: 25.0,
                       onPressed: () => setState(() {
                         widget.exercise.reps = (widget.exercise.reps > 0) ? widget.exercise.reps - 1 : 0;
                       }),
                     ),
-                    Text('${widget.exercise.reps} reps', style: TextStyle(fontSize: 25)),
+                    Text('${widget.exercise.reps} reps', style: const TextStyle(fontSize: 25)),
                     IconButton(
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       iconSize: 25.0,
                       onPressed: () => setState(() {
                         widget.exercise.reps += 1;

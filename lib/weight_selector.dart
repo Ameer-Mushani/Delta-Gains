@@ -5,7 +5,7 @@ import 'dart:math' as math;
 class WeightSelector extends StatefulWidget {
   final Exercise exercise;
 
-  WeightSelector({required this.exercise});
+  const WeightSelector({super.key, required this.exercise});
 
   @override
   _WeightSelectorState createState() => _WeightSelectorState();
@@ -26,9 +26,9 @@ class _WeightSelectorState extends State<WeightSelector> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 5),
-        Text('Total Weight: ${widget.exercise.weight} lbs', style: TextStyle(fontSize: 22)),
-        SizedBox(height: 10),
+        const SizedBox(height: 5),
+        Text('Total Weight: ${widget.exercise.weight} lbs', style: const TextStyle(fontSize: 22)),
+        const SizedBox(height: 10),
         Wrap(
           spacing: 8.0, // Space between buttons
           alignment: WrapAlignment.center, // Center the buttons horizontally
@@ -41,17 +41,16 @@ class _WeightSelectorState extends State<WeightSelector> {
             HexagonButton(size: 110.0, weight: 2.5, onPressed: () => addWeight(2.5), label: '+2.5 lbs'),
           ],
         ),
-        SizedBox(height: 10), // Add some spacing before the reset button
+        const SizedBox(height: 10), // Add some spacing before the reset button
         Center( // Center the reset button horizontally
             child: Padding(
-              padding: EdgeInsets.only(top: 42),
+              padding: const EdgeInsets.only(top: 42),
               child:  ElevatedButton(
                 onPressed: resetWeight,
-                child: Text('Reset Weight'),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red, // Button color
-                  onPrimary: Colors.white, // Text color
+                  foregroundColor: Colors.white, backgroundColor: Colors.red, // Text color
                 ),
+                child: const Text('Reset Weight'),
               ),
             )
 
@@ -67,7 +66,7 @@ class HexagonButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String label;
 
-  HexagonButton({
+  const HexagonButton({super.key, 
     required this.size,
     required this.weight,
     required this.onPressed,
@@ -78,7 +77,7 @@ class HexagonButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
-      child: Container(
+      child: SizedBox(
         width: size,
         height: size,
         child: CustomPaint(
@@ -109,7 +108,7 @@ class OctagonPainter extends CustomPainter {
 
     // The distance from the center to a vertex.
     final radius = size.width / 2;
-    final angle = (math.pi * 2) / 8; // Angle between vertices
+    const angle = (math.pi * 2) / 8; // Angle between vertices
 
     final path = Path();
 

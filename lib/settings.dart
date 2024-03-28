@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; // Ensure this import is correct to access BottomNavBar
+// Ensure this import is correct to access BottomNavBar
 import 'navbar.dart';
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  int _selectedIndex = 2;
+  final int _selectedIndex = 2;
   bool isLbs = true;
 
   void _onNavigate(String routeName) {
@@ -20,13 +22,13 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: Column(
         children: [
           CheckboxListTile(
             value: isLbs,
-            title: Text("Lbs"),
+            title: const Text("Lbs"),
             controlAffinity: ListTileControlAffinity.leading,
             onChanged: (newValue) {
               setState(() {
@@ -37,7 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           CheckboxListTile(
             value: !isLbs,
-            title: Text("Kgs"),
+            title: const Text("Kgs"),
             controlAffinity: ListTileControlAffinity.leading,
             onChanged: (newValue) {
               setState(() {

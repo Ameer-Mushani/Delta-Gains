@@ -10,34 +10,38 @@ import 'workout_provider.dart';
 void main() => runApp(
     ChangeNotifierProvider(
         create: (context) => WorkoutProvider(),
-      child: MyApp()
+      child: const MyApp()
     )
 );
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Delta Gains',
       initialRoute: '/',
       routes: {
-        '/': (context) => LandingPage(),
-        '/createWorkout': (context) => CreateWorkoutPage(),
-        '/editWorkout': (context) => EditWorkoutPage(),
-        '/settings': (context) => SettingsPage(),
-        '/stats': (context) => StatsPage(),
+        '/': (context) => const LandingPage(),
+        '/createWorkout': (context) => const CreateWorkoutPage(),
+        '/editWorkout': (context) => const EditWorkoutPage(),
+        '/settings': (context) => const SettingsPage(),
+        '/stats': (context) => const StatsPage(),
       },
     );
   }
 }
 
 class LandingPage extends StatefulWidget {
+  const LandingPage({super.key});
+
   @override
   _LandingPageState createState() => _LandingPageState();
 }
 
 class _LandingPageState extends State<LandingPage> {
-  int _selectedIndex = 1;
+  final int _selectedIndex = 1;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -87,17 +91,17 @@ class _LandingPageState extends State<LandingPage> {
               TextButton(onPressed: () => {
                 showDialog(context: context, builder: (BuildContext context) {
                   return  AlertDialog(
-                    title: Text("Feature coming soon!"),
+                    title: const Text("Feature coming soon!"),
                     actions: <Widget>[
                       TextButton(
                           onPressed: ()  {
                             Navigator.of(context).pop();
                           },
-                          child: Text("Close"))
+                          child: const Text("Close"))
                     ],
                   );
                 })
-              }, child: Text("Export to CSV"),)
+              }, child: const Text("Export to CSV"),)
             ],
           )
 

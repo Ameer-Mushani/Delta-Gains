@@ -1,20 +1,21 @@
-import 'dart:ui';
 
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'main.dart'; // Ensure this import is correct to access BottomNavBar
+// Ensure this import is correct to access BottomNavBar
 import 'navbar.dart';
 import 'workout_provider.dart';
 import 'workout.dart';
 import 'exercise.dart';
 class CreateWorkoutPage extends StatefulWidget {
+  const CreateWorkoutPage({super.key});
+
   @override
   _CreateWorkoutPageState createState() => _CreateWorkoutPageState();
 }
 
 class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
-  int _selectedIndex = 1;
+  final int _selectedIndex = 1;
 
   void _onNavigate(String routeName) {
     if (ModalRoute.of(context)?.settings.name != routeName) {
@@ -26,7 +27,7 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Workout'),
+        title: const Text('Create Workout'),
       ),
       body: Consumer<WorkoutProvider>(
         builder: (context, workoutProvider, child) {
@@ -35,13 +36,13 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
               // Align the column's children to the center of the screen
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 20), // Provides some spacing between the text and the button
+                const SizedBox(height: 20), // Provides some spacing between the text and the button
                 ElevatedButton(
                   onPressed: () {
                     // Navigate to the Edit Workout page when the button is pressed
                     Navigator.pushNamed(context, '/editWorkout');
                   },
-                  child: Text('Create Workout'), // Set the button text
+                  child: const Text('Create Workout'), // Set the button text
                 ),
                 Expanded(child: ListView.builder(
                     shrinkWrap: true,
@@ -53,17 +54,17 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> {
                         children: <Widget>[
                           ListView.builder(
                               shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.vertical,
                               itemCount: curWorkout.exercises.length,
                               itemBuilder: (context, j) {
                                 Exercise curExer = curWorkout.exercises[j];
                                 return Column(children: [
-                                  Text("Exercise: ${curExer.name}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
+                                  Text("Exercise: ${curExer.name}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
                                   Text("Sets: ${curExer.sets}"),
                                   Text("Reps: ${curExer.reps}"),
                                   Text("Weight: ${curExer.weight}"),
-                                  SizedBox(height: 20,)
+                                  const SizedBox(height: 20,)
                                 ],);
                               }
                           ),
