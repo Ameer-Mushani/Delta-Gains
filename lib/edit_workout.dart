@@ -42,7 +42,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
 
   void _addExercise() {
     setState(() {
-      final newExercise = Exercise(id: ++lastExerciseId);
+      final newExercise = Exercise(id: ++lastExerciseId, date: DateTime.now());
       exercises.add(newExercise);
       // Set the new exercise as the only expanded item.
       expandedExerciseId = newExercise.id;
@@ -105,7 +105,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                           Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
                           _formKey.currentState?.save();
                           // Handle the saved workout and exercises here
-                          Workout newWorkout =  Workout(workoutName, exercises);
+                          Workout newWorkout =  Workout(workoutName, exercises, DateTime.now());
                           workoutProvider.addWorkout(newWorkout);
 
                         },
