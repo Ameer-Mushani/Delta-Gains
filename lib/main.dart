@@ -7,12 +7,18 @@ import 'stats.dart';
 import 'navbar.dart';
 import 'edit_workout.dart';
 import 'workout_provider.dart';
+
 void main() => runApp(
-    ChangeNotifierProvider(
-        create: (context) => WorkoutProvider(),
-      child: const MyApp()
-    )
+  ChangeNotifierProvider(
+    create: (context) {
+      final provider = WorkoutProvider();
+      provider.loadWorkouts();
+      return provider;
+    },
+    child: const MyApp(),
+  ),
 );
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -101,8 +107,37 @@ class _LandingPageState extends State<LandingPage> {
                     ],
                   );
                 })
-              }, child: const Text("Export to CSV"),)
+              }, child: const Text("Export to CSV"),
+              ),
+
+              Expanded(
+                child: Consumer<WorkoutProvider>(
+                  builder: (context, provider, child) {
+                    return ListView.builder(
+                      itemCount: provider.workouts.length,
+                      itemBuilder: (context, index) {
+                        final workout = provider.workouts[index];
+                        return Card(
+                          margin: const EdgeInsets.all(8.0),
+                          child: ExpansionTile(
+                            title: Text(workout.name),
+                            subtitle: Text('Date: ${workout.date.toIso8601String().split('T').first}'),
+                            children: workout.exercises.map((exercise) {
+                              return ListTile(
+                                title: Text(exercise.name),
+                                subtitle: Text('Sets: ${exercise.sets}, Reps: ${exercise.reps}, Weight: ${exercise.weight}'),
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+
             ],
+
           )
 
       ),

@@ -1,0 +1,56 @@
+{
+  "workouts": [
+    {
+      "name": "Upper Body Strength",
+      "date": "2024-04-04",
+      "exercises": [
+        {
+          "id": 1,
+          "name": "Bench Press",
+          "weight": 185.5,
+          "sets": 3,
+          "reps": 8,
+          "date": "2024-04-04"
+        },
+        {
+          "id": 2,
+          "name": "Dumbbell Row",
+          "weight": 75.0,
+          "sets": 3,
+          "reps": 10,
+          "date": "2024-04-04"
+        }
+      ]
+    },
+    {
+      "name": "Leg Day",
+      "date": "2024-04-06",
+      "exercises": [
+        {
+          "id": 3,
+          "name": "Squats",
+          "weight": 225.0,
+          "sets": 4,
+          "reps": 6,
+          "date": "2024-04-06"
+        },
+        {
+          "id": 4,
+          "name": "Leg Press",
+          "weight": 400.0,
+          "sets": 3,
+          "reps": 8,
+          "date": "2024-04-06"
+        },
+        {
+          "id": 5,
+          "name": "Calf Raises",
+          "weight": 150.0,
+          "sets": 4,
+          "reps": 12,
+          "date": "2024-04-06"
+        }
+      ]
+    }
+  ]
+}
