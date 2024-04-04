@@ -129,7 +129,7 @@ class _StatsPageState extends State<StatsPage> {
                             fontSize: 14,
                           );
                           return LineTooltipItem(
-                            '${touchedSpot.y} lbs\n${DateFormat('MM/dd').format(DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt()))}',
+                            '${touchedSpot.y} lbs',
                             textStyle,
                           );
                         }).toList();
