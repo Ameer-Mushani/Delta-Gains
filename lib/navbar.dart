@@ -30,7 +30,7 @@ class BottomNavBar extends StatelessWidget {
             onItemSelected('/stats');
             break;
           case 1:
-            onItemSelected('/createWorkout');
+            onItemSelected('/editWorkout');
             break;
           case 2:
             onItemSelected('/settings');

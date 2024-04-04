@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'settings.dart';
-import 'create_workout.dart';
 import 'stats.dart';
 import 'navbar.dart';
 import 'edit_workout.dart';
@@ -30,7 +29,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LandingPage(),
-        '/createWorkout': (context) => const CreateWorkoutPage(),
         '/editWorkout': (context) => const EditWorkoutPage(),
         '/settings': (context) => const SettingsPage(),
         '/stats': (context) => const StatsPage(),

@@ -51,6 +51,14 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    //add a blank exercise on startup
+    _addExercise();
+  }
+
+
 // Method to create the Save Workout TextButton with an icon, text, and pill shape for AppBar with padding
   Widget _saveWorkoutButton() {
     return Padding(
