@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'workout_provider.dart';
 import 'package:intl/intl.dart';
-
-// Ensure this import is correct to access BottomNavBar
 import 'navbar.dart';
+import 'dart:math' as math;
 
+double roundToNearestFive(double value) {
+  return (value / 5).roundToDouble() * 5;
+}
+class DataPoint {
+  final DateTime date;
+  final double weight;
+
+  DataPoint(this.date, this.weight);
+}
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
 
@@ -14,7 +24,8 @@ class StatsPage extends StatefulWidget {
 
 class _StatsPageState extends State<StatsPage> {
   final int _selectedIndex = 0;
-
+  String? selectedExercise;
+  List<FlSpot> spots = [];
   void _onNavigate(String routeName) {
     if (ModalRoute.of(context)?.settings.name != routeName) {
       Navigator.pushNamed(context, routeName);
@@ -23,88 +34,128 @@ class _StatsPageState extends State<StatsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final workouts = Provider.of<WorkoutProvider>(context).workouts;
+    final exerciseNames = workouts
+        .expand((workout) => workout.exercises)
+        .map((exercise) => exercise.name)
+        .toSet()
+        .toList();
+
+    double? minWeight;
+    double? maxWeight;
+    Map<double, String> xValueToLabelMap = {};
+    if (spots.isNotEmpty) {
+      minWeight = spots.map((e) => e.y).reduce(math.min);
+      maxWeight = spots.map((e) => e.y).reduce(math.max);
+      minWeight = roundToNearestFive((minWeight * 0.95).floorToDouble());
+      maxWeight = roundToNearestFive((maxWeight * 1.025).ceilToDouble());
+      xValueToLabelMap = {
+        for (var spot in spots)
+          spot.x: DateFormat('MM/dd').format(DateTime.fromMillisecondsSinceEpoch(spot.x.toInt())),
+      };
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Stats'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(26.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
-              'Your Strength Over Time',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+            DropdownButton<String>(
+              value: selectedExercise,
+              hint: const Text("Select Exercise"),
+              isExpanded: true,
+              items: exerciseNames.map<DropdownMenuItem<String>>((String name) {
+                return DropdownMenuItem<String>(
+                  value: name,
+                  child: Text(name),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedExercise = newValue;
+                  List<DataPoint> filteredDataPoints = workouts
+                      .expand((workout) => workout.exercises)
+                      .where((exercise) => exercise.name == newValue)
+                      .map((exercise) => DataPoint(exercise.date, exercise.weight))
+                      .toList();
+                  filteredDataPoints.sort((a, b) => a.date.compareTo(b.date));
+
+                  spots = List.generate(filteredDataPoints.length, (index) => FlSpot(
+                    index.toDouble(),
+                    filteredDataPoints[index].weight,
+                  ));
+
+                  xValueToLabelMap = {
+                    for (int i = 0; i < filteredDataPoints.length; i++)
+                      i.toDouble(): DateFormat('MM/dd').format(filteredDataPoints[i].date),
+                  };
+
+                });
+              },
+
             ),
             SizedBox(height: 20),
-            Container(
-              height: 500,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Container(
-                  width: 800, // width can be adjusted based on the number of data points
-                  child: LineChart(
-                    LineChartData(
-                      gridData: FlGridData(show: true),
-                      titlesData: FlTitlesData(
-                        bottomTitles: SideTitles(
-                          showTitles: true,
-                          getTitles: (value) {
-                            switch (value.toInt()) {
-                              case 0:
-                                return 'Jan';
-                              case 1:
-                                return 'Feb';
-                              case 2:
-                                return 'Mar';
-                              case 3:
-                                return 'Apr';
-                              case 4:
-                                return 'May';
-                              case 5:
-                                return 'Jun';
-                              case 6:
-                                return 'Jul';
-                              default:
-                                return '';
-                            }
-                          },
-                        ),
-                        leftTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 40,
-                          getTitles: (value) {
-                            return '${value.toInt()} lbs';
-                          },
-                        ),
-                      ),
-                      borderData: FlBorderData(show: false),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: [
-                            FlSpot(0, 150),
-                            FlSpot(1, 153),
-                            FlSpot(2, 150),
-                            FlSpot(3, 155),
-                            FlSpot(4, 158),
-                            FlSpot(5, 157),
-                            FlSpot(6, 160),
-                          ],
-                          isCurved: true,
-                          colors: [Colors.blue],
-                          barWidth: 4,
-                          isStrokeCapRound: true,
-                          dotData: FlDotData(
-                            show: true,
-                          ),
-                          belowBarData: BarAreaData(show: false),
-                        )
-                      ],
+            Expanded(
+              child: spots.isNotEmpty
+                  ? LineChart(
+                LineChartData(
+                  minY: (minWeight),
+                  maxY: (maxWeight),
+
+                  gridData: FlGridData(show: true),
+                  titlesData: FlTitlesData(
+                    bottomTitles: SideTitles( // x axis
+                      showTitles: true,
+                      rotateAngle: 45,
+                      // getTitles: (value) => xValueToLabelMap[value] ?? '',
+                      getTitles: (value) {
+                        return xValueToLabelMap[value] ?? '';
+                      },
+
+                    ),
+                    leftTitles: SideTitles( // y axis
+                      showTitles: true,
+                      interval: 5,
+                      getTitles: (value) => '${value.toInt()} lbs',
+                      reservedSize: 45,
                     ),
                   ),
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      tooltipBgColor: Colors.white,
+                      getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                        return touchedSpots.map((LineBarSpot touchedSpot) {
+                          final textStyle = TextStyle(
+                            color: Colors.purple, // Text color for the tooltip
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          );
+                          return LineTooltipItem(
+                            '${touchedSpot.y} lbs\n${DateFormat('MM/dd').format(DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt()))}',
+                            textStyle,
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: spots,
+                      isCurved: true,
+                      colors: [Theme.of(context).primaryColor],
+                      barWidth: 4,
+                      isStrokeCapRound: true,
+                      dotData: FlDotData(show: true),
+                      belowBarData: BarAreaData(show: false),
+                    ),
+                  ],
                 ),
-              ),
+              )
+                  : Center(child: Text('No data available')),
             ),
           ],
         ),
