@@ -31,7 +31,7 @@ class _StatsPageState extends State<StatsPage> {
       Navigator.pushNamed(context, routeName);
     }
   }
-
+  List<DataPoint> filteredDataPoints = [];
   @override
   Widget build(BuildContext context) {
     final workouts = Provider.of<WorkoutProvider>(context).workouts;
@@ -76,25 +76,18 @@ class _StatsPageState extends State<StatsPage> {
               onChanged: (String? newValue) {
                 setState(() {
                   selectedExercise = newValue;
-                  List<DataPoint> filteredDataPoints = workouts
+                  filteredDataPoints = workouts
                       .expand((workout) => workout.exercises)
                       .where((exercise) => exercise.name == newValue)
                       .map((exercise) => DataPoint(exercise.date, exercise.weight))
                       .toList();
                   filteredDataPoints.sort((a, b) => a.date.compareTo(b.date));
-
-                  spots = List.generate(filteredDataPoints.length, (index) => FlSpot(
-                    index.toDouble(),
-                    filteredDataPoints[index].weight,
-                  ));
-
-                  xValueToLabelMap = {
-                    for (int i = 0; i < filteredDataPoints.length; i++)
-                      i.toDouble(): DateFormat('MM/dd').format(filteredDataPoints[i].date),
-                  };
-
+                  spots = List.generate(filteredDataPoints.length, (index) {
+                    return FlSpot(index.toDouble(), filteredDataPoints[index].weight);
+                  });
                 });
               },
+
 
             ),
             SizedBox(height: 20),
@@ -110,11 +103,13 @@ class _StatsPageState extends State<StatsPage> {
                     bottomTitles: SideTitles( // x axis
                       showTitles: true,
                       rotateAngle: 45,
-                      // getTitles: (value) => xValueToLabelMap[value] ?? '',
-                      getTitles: (value) {
-                        return xValueToLabelMap[value] ?? '';
-                      },
-
+                        getTitles: (value) {
+                          final index = value.toInt();
+                          if (index >= 0 && index < filteredDataPoints.length) {
+                            return DateFormat('MM/dd').format(filteredDataPoints[index].date);
+                          }
+                          return '';
+                        },
                     ),
                     leftTitles: SideTitles( // y axis
                       showTitles: true,
