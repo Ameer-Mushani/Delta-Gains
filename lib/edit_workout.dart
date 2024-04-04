@@ -59,7 +59,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
         onPressed: () {
           Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
           _formKey.currentState?.save();
-          Workout newWorkout = Workout(workoutName, exercises, DateTime.now());
+          Workout newWorkout = Workout(UniqueKey(), workoutName, exercises, DateTime.now());
           Provider.of<WorkoutProvider>(context, listen: false).addWorkout(newWorkout);
           showDialog(
             context: context,
@@ -90,7 +90,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
 
         },
         style: TextButton.styleFrom(
-          primary: Colors.white,
+          foregroundColor: Colors.white,
           textStyle: TextStyle(fontSize: 18),
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           shape: StadiumBorder(),

@@ -1,3 +1,4 @@
+import 'package:delta_gains/workout.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -51,6 +52,46 @@ class _LandingPageState extends State<LandingPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  Map<DateTime, List<UniqueKey>> _events = {};
+  List<Workout> workouts = [];
+  List<Workout> selectedDaysWorkouts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _events = {};
+  }
+
+  // get workouts to load calendar events
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
+    updateEvents();
+  }
+
+  // update calendar events based on workouts
+  //caled from didChangeDependencies()
+  void updateEvents() {
+    _events = {};
+    for(final workout in workouts) {
+      final dateKey = DateUtils.dateOnly(workout.date);
+      //only add workout if key is not already in events map
+      if (!_events.containsValue(workout.key)) {
+        if (_events.containsKey(dateKey)) {
+          _events[dateKey]!.add(workout.key);
+        } else {
+          _events[dateKey] = [workout.key];
+        }
+      }
+    }
+  }
+
+  //calendar method
+  List<UniqueKey> _getEventsForDay(DateTime day) {
+    final dayOnly = DateUtils.dateOnly(day);
+    return _events[dayOnly] ?? <UniqueKey>[];
+  }
 
   void _onNavigate(String routeName) {
     if (ModalRoute.of(context)?.settings.name != routeName) {
@@ -70,9 +111,10 @@ class _LandingPageState extends State<LandingPage> {
               TableCalendar(
                 firstDay: DateTime.utc(2000, 1, 1),
                 lastDay: DateTime(2100, 12, 31),
-                focusedDay: DateTime.now(),
+                focusedDay: _focusedDay,
+                eventLoader: _getEventsForDay,
                 headerStyle: const HeaderStyle(
-                  titleCentered: true
+                    titleCentered: true
                 ),
                 calendarFormat: _calendarFormat,
                 availableCalendarFormats: const {CalendarFormat.month: 'Month'},
@@ -84,6 +126,12 @@ class _LandingPageState extends State<LandingPage> {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay; // update `_focusedDay` here as well
                   });
+                  selectedDaysWorkouts = [];
+                  for (final workout in workouts) {
+                    if(DateUtils.dateOnly(workout.date) == DateUtils.dateOnly(_selectedDay!)) {
+                      selectedDaysWorkouts.add(workout);
+                    }
+                  }
                 },
                 onFormatChanged: (format) {
                   setState(() {
@@ -110,13 +158,38 @@ class _LandingPageState extends State<LandingPage> {
               }, child: const Text("Export to CSV"),
               ),
 
+              // Expanded(
+              //   child: Consumer<WorkoutProvider>(
+              //     builder: (context, provider, child) {
+              //       return ListView.builder(
+              //         itemCount: provider.workouts.length,
+              //         itemBuilder: (context, index) {
+              //           final workout = provider.workouts[index];
+              //           return Card(
+              //             margin: const EdgeInsets.all(8.0),
+              //             child: ExpansionTile(
+              //               title: Text(workout.name),
+              //               subtitle: Text('Date: ${workout.date.toIso8601String().split('T').first}'),
+              //               children: workout.exercises.map((exercise) {
+              //                 return ListTile(
+              //                   title: Text(exercise.name),
+              //                   subtitle: Text('Sets: ${exercise.sets}, Reps: ${exercise.reps}, Weight: ${exercise.weight}'),
+              //                 );
+              //               }).toList(),
+              //             ),
+              //           );
+              //         },
+              //       );
+              //     },
+              //   ),
+              // ),
               Expanded(
                 child: Consumer<WorkoutProvider>(
                   builder: (context, provider, child) {
                     return ListView.builder(
-                      itemCount: provider.workouts.length,
+                      itemCount: selectedDaysWorkouts.length,
                       itemBuilder: (context, index) {
-                        final workout = provider.workouts[index];
+                        final workout = selectedDaysWorkouts[index];
                         return Card(
                           margin: const EdgeInsets.all(8.0),
                           child: ExpansionTile(

@@ -17,6 +17,7 @@ class WorkoutProvider extends ChangeNotifier {
     final data = await json.decode(response);
     for (var workoutData in data['workouts']) {
       final workout = Workout(
+        UniqueKey(),
         workoutData['name'],
         (workoutData['exercises'] as List).map((e) => Exercise.full(
           id: e['id'],
