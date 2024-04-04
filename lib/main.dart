@@ -50,7 +50,7 @@ class _LandingPageState extends State<LandingPage> {
   final int _selectedIndex = 1;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime? _selectedDay = DateTime.now();
   Map<DateTime, List<UniqueKey>> _events = {};
   List<Workout> workouts = [];
   List<Workout> selectedDaysWorkouts = [];
@@ -67,6 +67,7 @@ class _LandingPageState extends State<LandingPage> {
     super.didChangeDependencies();
     workouts = Provider.of<WorkoutProvider>(context, listen: true).workouts;
     updateEvents();
+    updateSelectedDayWorkouts();
   }
 
   // update calendar events based on workouts
@@ -90,6 +91,16 @@ class _LandingPageState extends State<LandingPage> {
   List<UniqueKey> _getEventsForDay(DateTime day) {
     final dayOnly = DateUtils.dateOnly(day);
     return _events[dayOnly] ?? <UniqueKey>[];
+  }
+
+  updateSelectedDayWorkouts(){
+    selectedDaysWorkouts = [];
+    for (final workout in workouts) {
+      if (DateUtils.dateOnly(workout.date) ==
+          DateUtils.dateOnly(_selectedDay!)) {
+        selectedDaysWorkouts.add(workout);
+      }
+    }
   }
 
   void _onNavigate(String routeName) {
@@ -123,13 +134,7 @@ class _LandingPageState extends State<LandingPage> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay; // update `_focusedDay` here as well
               });
-              selectedDaysWorkouts = [];
-              for (final workout in workouts) {
-                if (DateUtils.dateOnly(workout.date) ==
-                    DateUtils.dateOnly(_selectedDay!)) {
-                  selectedDaysWorkouts.add(workout);
-                }
-              }
+              updateSelectedDayWorkouts();
             },
             onFormatChanged: (format) {
               setState(() {
