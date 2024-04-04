@@ -51,6 +51,67 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
     });
   }
 
+// Method to create the Save Workout TextButton with an icon, text, and pill shape for AppBar with padding
+  Widget _saveWorkoutButton() {
+    return Padding(
+      padding: EdgeInsets.only(right: 8.0),
+      child: TextButton(
+        onPressed: () {
+          Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
+          _formKey.currentState?.save();
+          Workout newWorkout = Workout(workoutName, exercises, DateTime.now());
+          Provider.of<WorkoutProvider>(context, listen: false).addWorkout(newWorkout);
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Success!'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green, size: 75), // Larger checkmark icon
+                    Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: Text('Workout saved successfully!', textAlign: TextAlign.center), // Centered text
+                    ),
+                  ],
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+
+        },
+        style: TextButton.styleFrom(
+          primary: Colors.white,
+          textStyle: TextStyle(fontSize: 18),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          shape: StadiumBorder(),
+          backgroundColor: Colors.blue,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              'Save',
+              style: TextStyle(
+                color: Colors.white, // Text color
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -58,63 +119,56 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child:  Scaffold(
-        appBar: AppBar(title: const Text('Edit Workout')),
+        appBar: AppBar(
+          title: const Text('New Workout'),
+          actions: [
+            _saveWorkoutButton(), // Add the Save Workout button here
+          ],
+        ),
         body: Consumer<WorkoutProvider>(
           builder: (context, workoutProvider, child) {
             return SingleChildScrollView(
               child: Form(
                 key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: 'Workout Name'),
-                      onSaved: (value) => workoutName = value ?? '',
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: exercises.length,
-                      itemBuilder: (context, index) {
-                        return ExerciseInput(
-                          exercise: exercises[index],
-                          isExpanded: expandedExerciseId == exercises[index].id,
-                          onExpansionChanged: (isExpanded) {
-                            setState(() {
-                              if (isExpanded) {
-                                expandedExerciseId = exercises[index].id;
-                              } else {
-                                expandedExerciseId =
-                                null; // Collapse if it was expanded and user taps to close
-                              }
-                            });
-                          },
-                        );
-                      },
-                    ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration: const InputDecoration(labelText: 'Workout Name'),
+                        onSaved: (value) => workoutName = value ?? '',
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: exercises.length,
+                        itemBuilder: (context, index) {
+                          return ExerciseInput(
+                            exercise: exercises[index],
+                            isExpanded: expandedExerciseId == exercises[index].id,
+                            onExpansionChanged: (isExpanded) {
+                              setState(() {
+                                if (isExpanded) {
+                                  expandedExerciseId = exercises[index].id;
+                                } else {
+                                  expandedExerciseId =
+                                  null; // Collapse if it was expanded and user taps to close
+                                }
+                              });
+                            },
+                          );
+                        },
+                      ),
                     Padding(
                       padding: const EdgeInsets.all(15),
                       child:  ElevatedButton(
                         onPressed: _addExercise,
-                        child: const Icon(Icons.add),
+                        child: const Text("Add Exercise"),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
-                          _formKey.currentState?.save();
-                          // Handle the saved workout and exercises here
-                          Workout newWorkout =  Workout(workoutName, exercises, DateTime.now());
-                          workoutProvider.addWorkout(newWorkout);
-
-                        },
-                        child: const Text('Save Workout'),
-                      ),
-                    )
-
                   ],
                 ),
+              ),
               ),
             );
           },
@@ -134,7 +188,7 @@ class ExerciseInput extends StatefulWidget {
   final bool isExpanded;
   final Function(bool) onExpansionChanged;
 
-  const ExerciseInput({super.key, 
+  const ExerciseInput({super.key,
     required this.exercise,
     this.isExpanded = false,
     required this.onExpansionChanged,
@@ -148,7 +202,7 @@ class _ExerciseInputState extends State<ExerciseInput> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: ExpansionTileCard(
         expandedColor: Theme.of(context).colorScheme.secondaryContainer,
         baseColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -218,4 +272,3 @@ class _ExerciseInputState extends State<ExerciseInput> {
     );
   }
 }
-
