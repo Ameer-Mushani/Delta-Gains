@@ -167,16 +167,16 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                           );
                         },
                       ),
-                    Padding(
-                      padding: const EdgeInsets.all(15),
-                      child:  ElevatedButton(
-                        onPressed: _addExercise,
-                        child: const Text("Add Exercise"),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child:  ElevatedButton(
+                          onPressed: _addExercise,
+                          child: const Text("Add Exercise"),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
               ),
             );
           },

@@ -66,7 +66,7 @@ class HexagonButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String label;
 
-  const HexagonButton({super.key, 
+  const HexagonButton({super.key,
     required this.size,
     required this.weight,
     required this.onPressed,

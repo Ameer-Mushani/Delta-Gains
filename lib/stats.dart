@@ -103,13 +103,13 @@ class _StatsPageState extends State<StatsPage> {
                     bottomTitles: SideTitles( // x axis
                       showTitles: true,
                       rotateAngle: 45,
-                        getTitles: (value) {
-                          final index = value.toInt();
-                          if (index >= 0 && index < filteredDataPoints.length) {
-                            return DateFormat('MM/dd').format(filteredDataPoints[index].date);
-                          }
-                          return '';
-                        },
+                      getTitles: (value) {
+                        final index = value.toInt();
+                        if (index >= 0 && index < filteredDataPoints.length) {
+                          return DateFormat('MM/dd').format(filteredDataPoints[index].date);
+                        }
+                        return '';
+                      },
                     ),
                     leftTitles: SideTitles( // y axis
                       showTitles: true,

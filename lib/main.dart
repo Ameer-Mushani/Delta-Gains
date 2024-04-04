@@ -9,15 +9,15 @@ import 'edit_workout.dart';
 import 'workout_provider.dart';
 
 void main() => runApp(
-      ChangeNotifierProvider(
-        create: (context) {
-          final provider = WorkoutProvider();
-          provider.loadWorkouts();
-          return provider;
-        },
-        child: const MyApp(),
-      ),
-    );
+  ChangeNotifierProvider(
+    create: (context) {
+      final provider = WorkoutProvider();
+      provider.loadWorkouts();
+      return provider;
+    },
+    child: const MyApp(),
+  ),
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -115,108 +115,82 @@ class _LandingPageState extends State<LandingPage> {
       ),
       body: Center(
           child: Column(
-        children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2000, 1, 1),
-            lastDay: DateTime(2100, 12, 31),
-            focusedDay: _focusedDay,
-            eventLoader: _getEventsForDay,
-            headerStyle: const HeaderStyle(titleCentered: true),
-            calendarFormat: _calendarFormat,
-            availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay; // update `_focusedDay` here as well
-              });
-              updateSelectedDayWorkouts();
-            },
-            onFormatChanged: (format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            },
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-          ),
-          TextButton(
-            onPressed: () => {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text("Feature coming soon!"),
-                      actions: <Widget>[
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text("Close"))
-                      ],
-                    );
-                  })
-            },
-            child: const Text("Export to CSV"),
-          ),
-
-          // Expanded(
-          //   child: Consumer<WorkoutProvider>(
-          //     builder: (context, provider, child) {
-          //       return ListView.builder(
-          //         itemCount: provider.workouts.length,
-          //         itemBuilder: (context, index) {
-          //           final workout = provider.workouts[index];
-          //           return Card(
-          //             margin: const EdgeInsets.all(8.0),
-          //             child: ExpansionTile(
-          //               title: Text(workout.name),
-          //               subtitle: Text('Date: ${workout.date.toIso8601String().split('T').first}'),
-          //               children: workout.exercises.map((exercise) {
-          //                 return ListTile(
-          //                   title: Text(exercise.name),
-          //                   subtitle: Text('Sets: ${exercise.sets}, Reps: ${exercise.reps}, Weight: ${exercise.weight}'),
-          //                 );
-          //               }).toList(),
-          //             ),
-          //           );
-          //         },
-          //       );
-          //     },
-          //   ),
-          // ),
-          Expanded(
-            child: Consumer<WorkoutProvider>(
-              builder: (context, provider, child) {
-                return ListView.builder(
-                  itemCount: selectedDaysWorkouts.length,
-                  itemBuilder: (context, index) {
-                    final workout = selectedDaysWorkouts[index];
-                    return Card(
-                      margin: const EdgeInsets.all(8.0),
-                      child: ExpansionTile(
-                        title: Text(workout.name),
-                        subtitle: Text(
-                            'Date: ${workout.date.toIso8601String().split('T').first}'),
-                        children: workout.exercises.map((exercise) {
-                          return ListTile(
-                            title: Text(exercise.name),
+            children: [
+              TableCalendar(
+                firstDay: DateTime.utc(2000, 1, 1),
+                lastDay: DateTime(2100, 12, 31),
+                focusedDay: _focusedDay,
+                eventLoader: _getEventsForDay,
+                headerStyle: const HeaderStyle(titleCentered: true),
+                calendarFormat: _calendarFormat,
+                availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay; // update `_focusedDay` here as well
+                  });
+                  updateSelectedDayWorkouts();
+                },
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                },
+                onPageChanged: (focusedDay) {
+                  _focusedDay = focusedDay;
+                },
+              ),
+              TextButton(
+                onPressed: () => {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Feature coming soon!"),
+                          actions: <Widget>[
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Close"))
+                          ],
+                        );
+                      })
+                },
+                child: const Text("Export to CSV"),
+              ),
+              Expanded(
+                child: Consumer<WorkoutProvider>(
+                  builder: (context, provider, child) {
+                    return ListView.builder(
+                      itemCount: selectedDaysWorkouts.length,
+                      itemBuilder: (context, index) {
+                        final workout = selectedDaysWorkouts[index];
+                        return Card(
+                          margin: const EdgeInsets.all(8.0),
+                          child: ExpansionTile(
+                            title: Text(workout.name),
                             subtitle: Text(
-                                'Sets: ${exercise.sets}, Reps: ${exercise.reps}, Weight: ${exercise.weight}'),
-                          );
-                        }).toList(),
-                      ),
+                                'Date: ${workout.date.toIso8601String().split('T').first}'),
+                            children: workout.exercises.map((exercise) {
+                              return ListTile(
+                                title: Text(exercise.name),
+                                subtitle: Text(
+                                    'Sets: ${exercise.sets}, Reps: ${exercise.reps}, Weight: ${exercise.weight}'),
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
                     );
                   },
-                );
-              },
-            ),
-          ),
-        ],
-      )),
+                ),
+              ),
+            ],
+          )),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
         onItemSelected: _onNavigate,
