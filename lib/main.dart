@@ -27,11 +27,42 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Delta Gains',
       initialRoute: '/',
-      routes: {
-        '/': (context) => const LandingPage(),
-        '/editWorkout': (context) => const EditWorkoutPage(),
-        '/settings': (context) => const SettingsPage(),
-        '/stats': (context) => const StatsPage(),
+      // routes: {
+      //   '/': (context) => const LandingPage(),
+      //   '/editWorkout': (context) => const EditWorkoutPage(),
+      //   '/settings': (context) => const SettingsPage(),
+      //   '/stats': (context) => const StatsPage(),
+      // },
+      onGenerateRoute: (settings) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        final tween = Tween(begin: begin, end: end);
+        if (settings.name == "/editWorkout") {
+          return PageRouteBuilder(
+              settings: settings,
+              pageBuilder: (_, __, ___) => EditWorkoutPage(),
+              transitionsBuilder: (_, a, __, c) {
+                final offsetAnimation = a.drive(tween);
+                return SlideTransition(position: offsetAnimation, child: c);
+              },
+              transitionDuration: const Duration(milliseconds: 500)
+          );
+        }
+        if (settings.name == "/stats") {
+          return PageRouteBuilder(
+              settings: settings,
+              pageBuilder: (_, __, ___) => StatsPage(),
+              transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c)
+          );
+        }
+        if (settings.name == "/settings") {
+          return PageRouteBuilder(
+              settings: settings,
+              pageBuilder: (_, __, ___) => SettingsPage(),
+              transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c)
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const LandingPage());
       },
     );
   }
@@ -106,7 +137,40 @@ class _LandingPageState extends State<LandingPage> {
       Navigator.pushNamed(context, routeName);
     }
   }
+  String _getFormattedDate(DateTime dateTime) {
+    return '${_getMonthName(dateTime.month)} ${dateTime.day}';
+  }
 
+  String _getMonthName(int month) {
+    switch (month) {
+      case 1:
+        return 'January';
+      case 2:
+        return 'February';
+      case 3:
+        return 'March';
+      case 4:
+        return 'April';
+      case 5:
+        return 'May';
+      case 6:
+        return 'June';
+      case 7:
+        return 'July';
+      case 8:
+        return 'August';
+      case 9:
+        return 'September';
+      case 10:
+        return 'October';
+      case 11:
+        return 'November';
+      case 12:
+        return 'December';
+      default:
+        return '';
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,24 +207,11 @@ class _LandingPageState extends State<LandingPage> {
                   _focusedDay = focusedDay;
                 },
               ),
-              TextButton(
-                onPressed: () => {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Feature coming soon!"),
-                          actions: <Widget>[
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text("Close"))
-                          ],
-                        );
-                      })
-                },
-                child: const Text("Export to CSV"),
+              Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Center(
+                    child: Text("Workouts: ${_getFormattedDate(_selectedDay!)}", style: TextStyle(fontSize: 25),),
+                  )
               ),
               Expanded(
                 child: Consumer<WorkoutProvider>(
