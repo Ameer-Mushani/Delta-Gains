@@ -11,6 +11,9 @@ class WorkoutProvider extends ChangeNotifier {
     _workouts.add(workout);
     notifyListeners();
   }
+  String workoutsToJson() {
+    return json.encode(_workouts.map((w) => w.toJson()).toList());
+  }
 
   Future<void> loadWorkouts() async {
     final String response = await rootBundle.loadString('assets/workouts.json');

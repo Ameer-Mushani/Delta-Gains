@@ -150,7 +150,7 @@ class _StatsPageState extends State<StatsPage> {
                   ],
                 ),
               )
-                  : Center(child: Text('No data available')),
+                  : Center(child: Text('Please select a exercise')),
             ),
           ],
         ),

@@ -16,4 +16,10 @@ class Workout {
   void removeExercise(Exercise exercise) {
     exercises.remove(exercise);
   }
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'exercises': exercises.map((e) => e.toJson()).toList(),
+    'date': date.toIso8601String(),
+  };
 }

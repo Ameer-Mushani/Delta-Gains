@@ -19,4 +19,12 @@ class Exercise {
     required this.reps,
     required this.date,
   });
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'weight': weight,
+    'sets': sets,
+    'reps': reps,
+    'date': date.toIso8601String(),
+  };
 }

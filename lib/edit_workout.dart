@@ -58,14 +58,12 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
     _addExercise();
   }
 
-
-// Method to create the Save Workout TextButton with an icon, text, and pill shape for AppBar with padding
   Widget _saveWorkoutButton() {
     return Padding(
       padding: EdgeInsets.only(right: 8.0),
       child: TextButton(
         onPressed: () {
-          Navigator.popUntil(context, ModalRoute.withName('/createWorkout'));
+          Navigator.popUntil(context, ModalRoute.withName('/'));
           _formKey.currentState?.save();
           Workout newWorkout = Workout(UniqueKey(), workoutName, exercises, DateTime.now());
           Provider.of<WorkoutProvider>(context, listen: false).addWorkout(newWorkout);
@@ -128,7 +126,7 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
       },
       child:  Scaffold(
         appBar: AppBar(
-          title: const Text('New Workout'),
+          title: const Text('Create Workout'),
           actions: [
             _saveWorkoutButton(), // Add the Save Workout button here
           ],
