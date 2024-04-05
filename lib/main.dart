@@ -1,4 +1,5 @@
 import 'package:delta_gains/workout.dart';
+import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -52,6 +53,13 @@ class MyApp extends StatelessWidget {
           return PageRouteBuilder(
               settings: settings,
               pageBuilder: (_, __, ___) => StatsPage(),
+              transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c)
+          );
+        }
+        if (settings.name == "/") {
+          return PageRouteBuilder(
+              settings: settings,
+              pageBuilder: (_, __, ___) => LandingPage(),
               transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c)
           );
         }
@@ -220,20 +228,21 @@ class _LandingPageState extends State<LandingPage> {
                       itemCount: selectedDaysWorkouts.length,
                       itemBuilder: (context, index) {
                         final workout = selectedDaysWorkouts[index];
-                        return Card(
-                          margin: const EdgeInsets.all(8.0),
-                          child: ExpansionTile(
-                            title: Text(workout.name),
-                            subtitle: Text(
-                                'Date: ${workout.date.toIso8601String().split('T').first}'),
-                            children: workout.exercises.map((exercise) {
-                              return ListTile(
-                                title: Text(exercise.name),
+                        return Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: ExpansionTileCard(
+                                expandedColor: Theme.of(context).colorScheme.secondaryContainer,
+                                baseColor: Theme.of(context).colorScheme.secondaryContainer,
+                                title: Text(workout.name),
                                 subtitle: Text(
-                                    'Sets: ${exercise.sets}, Reps: ${exercise.reps}, Weight: ${exercise.weight}'),
-                              );
-                            }).toList(),
-                          ),
+                                    'Date: ${workout.date.toIso8601String().split('T').first}'),
+                                children: workout.exercises.map((exercise) {
+                                  return ListTile(
+                                    title: Text(exercise.name),
+                                    subtitle: Text(
+                                        'Sets: ${exercise.sets}, Reps: ${exercise.reps}, Weight: ${exercise.weight}'),
+                                  );
+                                }).toList()
+                            )
                         );
                       },
                     );

@@ -44,7 +44,7 @@ class _WeightSelectorState extends State<WeightSelector> {
         const SizedBox(height: 10), // Add some spacing before the reset button
         Center( // Center the reset button horizontally
             child: Padding(
-              padding: const EdgeInsets.only(top: 42),
+              padding: const EdgeInsets.only(top:21, bottom: 16),
               child:  ElevatedButton(
                 onPressed: resetWeight,
                 style: ElevatedButton.styleFrom(

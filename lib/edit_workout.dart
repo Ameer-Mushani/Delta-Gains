@@ -169,6 +169,13 @@ class _EditWorkoutPageState extends State<EditWorkoutPage> {
                         padding: const EdgeInsets.all(15),
                         child:  ElevatedButton(
                           onPressed: _addExercise,
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              textStyle: TextStyle(fontSize: 18),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              shape: StadiumBorder(),
+                              backgroundColor: Colors.blue,
+                            ),
                           child: const Text("Add Exercise"),
                         ),
                       ),
@@ -212,14 +219,14 @@ class _ExerciseInputState extends State<ExerciseInput> {
       child: ExpansionTileCard(
         expandedColor: Theme.of(context).colorScheme.secondaryContainer,
         baseColor: Theme.of(context).colorScheme.secondaryContainer,
-        initiallyExpanded: widget.isExpanded,
+        // initiallyExpanded: widget.isExpanded,
         onExpansionChanged: widget.onExpansionChanged,
         title: Text(widget.exercise.name.isNotEmpty
             ? widget.exercise.name
             : "New Exercise"),
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
             child: Column(
               children: [
                 TextFormField(
