@@ -2,7 +2,7 @@
 
 The Ultimate Workout Tracking App
 
-Created by Ameer Mushani and Lucas Jarrett
+Created by Ameer Mushani and [Lucas Jarrett](https://github.com/LucasJarrett)
 
 ## Features
 - Track your workouts
